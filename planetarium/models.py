@@ -1,14 +1,11 @@
 from datetime import datetime, timedelta
-
 from django.db import models
-
 from planetarium_api import settings
 
 
 class PlanetariumDome(models.Model):
     name = models.CharField(max_length=255)
-    rows = models.PositiveSmallIntegerField()
-    seats_in_row = models.PositiveSmallIntegerField()
+    description = models.TextField(blank=True, null=True)
 
     class Meta:
         ordering = ["name"]
@@ -20,7 +17,23 @@ class PlanetariumDome(models.Model):
 
     @property
     def capacity(self) -> int:
-        return self.rows * self.seats_in_row
+        capacity = 0
+        for row in self.seat_rows:
+            capacity += row.seats_in_row
+        return capacity
+
+
+class SeatRow(models.Model):
+    planetarium_dome = models.ForeignKey(
+        PlanetariumDome, on_delete=models.CASCADE, related_name="seat_rows"
+    )
+    row_number = models.PositiveIntegerField()
+    seats_in_row = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ["row_number"]
+        verbose_name = "row of seats"
+        verbose_name_plural = "rows of seats"
 
 
 class ShowTheme(models.Model):
