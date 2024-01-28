@@ -132,6 +132,39 @@ class ShowSessionSerializer(serializers.ModelSerializer):
         fields = ["id", "astronomy_show", "planetarium_dome", "show_begin"]
 
 
+class ShowSessionListSerializer(ShowSessionSerializer):
+    astronomy_show = serializers.StringRelatedField(many=False, read_only=True)
+    planetarium_dome = serializers.StringRelatedField(
+        many=False, read_only=True
+    )
+    show_begin = serializers.DateTimeField(format="%d/%m/%Y, %H:%M")
+
+
+class ShowSessionDetailSerializer(serializers.ModelSerializer):
+    astronomy_show = serializers.StringRelatedField(many=False, read_only=True)
+    planetarium_dome = serializers.StringRelatedField(
+        many=False, read_only=True
+    )
+    show_begin = serializers.DateTimeField(format="%d/%m/%Y, %H:%M")
+    show_end = serializers.DateTimeField(
+        format="%d/%m/%Y, %H:%M", read_only=True
+    )
+    duration = serializers.IntegerField(
+        source="astronomy_show.duration", read_only=True
+    )
+
+    class Meta:
+        model = ShowSession
+        fields = [
+            "id",
+            "astronomy_show",
+            "planetarium_dome",
+            "show_begin",
+            "show_end",
+            "duration",
+        ]
+
+
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
