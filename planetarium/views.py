@@ -36,6 +36,14 @@ class PlanetariumDomeViewSet(CreateListRetrieveUpdateViewSet):
     queryset = PlanetariumDome.objects.all()
     serializer_class = PlanetariumDomeSerializer
 
+    def get_queryset(self):
+        queryset = super(PlanetariumDomeViewSet, self).get_queryset()
+
+        if self.action == "retrieve":
+            queryset = queryset.prefetch_related("seat_rows")
+
+        return queryset
+
     def get_serializer_class(self):
         if self.action == "list":
             return PlanetariumDomeListSerializer
@@ -51,6 +59,14 @@ class ShowThemeViewSet(CreateListRetrieveUpdateViewSet):
 class AstronomyShowViewSet(viewsets.ModelViewSet):
     queryset = AstronomyShow.objects.all()
     serializer_class = AstronomyShowSerializer
+
+    def get_queryset(self):
+        queryset = super(AstronomyShowViewSet, self).get_queryset()
+
+        if self.action in ["list", "retrieve"]:
+            queryset = queryset.prefetch_related("show_theme")
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
