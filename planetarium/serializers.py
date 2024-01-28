@@ -86,6 +86,46 @@ class AstronomyShowSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "description", "duration", "show_theme"]
 
 
+class AstronomyShowListSerializer(serializers.ModelSerializer):
+    show_theme = serializers.StringRelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = AstronomyShow
+        fields = ["id", "title", "duration", "show_theme"]
+
+
+class AstronomyShowDetailSerializer(AstronomyShowSerializer):
+    show_theme = serializers.StringRelatedField(many=True, read_only=True)
+    future_show_sessions = serializers.SerializerMethodField(
+        "get_future_show_sessions"
+    )
+
+    def get_future_show_sessions(self, astronomy_show):
+        tzinfo = ZoneInfo("Europe/Berlin")
+
+        show_sessions_queryset = ShowSession.objects.filter(
+            show_begin__gte=datetime.datetime.now(tzinfo),
+            astronomy_show=astronomy_show,
+        )[:5]
+
+        serializer = ShowSessionSerializer(
+            instance=show_sessions_queryset, many=True, context=self.context
+        )
+
+        return serializer.data
+
+    class Meta:
+        model = AstronomyShow
+        fields = [
+            "id",
+            "title",
+            "description",
+            "duration",
+            "show_theme",
+            "future_show_sessions",
+        ]
+
+
 class ShowSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShowSession
