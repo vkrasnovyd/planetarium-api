@@ -10,11 +10,13 @@ from planetarium.models import (
 
 from planetarium.serializers import (
     PlanetariumDomeSerializer,
+    PlanetariumDomeListSerializer,
     ShowThemeSerializer,
     ShowSessionSerializer,
     AstronomyShowSerializer,
     ReservationSerializer,
 )
+
 
 class CreateListRetrieveUpdateViewSet(
     mixins.ListModelMixin,
@@ -31,6 +33,12 @@ class CreateListRetrieveUpdateViewSet(
 class PlanetariumDomeViewSet(CreateListRetrieveUpdateViewSet):
     queryset = PlanetariumDome.objects.all()
     serializer_class = PlanetariumDomeSerializer
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return PlanetariumDomeListSerializer
+
+        return PlanetariumDomeSerializer
 
 
 class ShowThemeViewSet(CreateListRetrieveUpdateViewSet):
