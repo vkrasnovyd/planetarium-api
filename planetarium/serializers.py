@@ -142,6 +142,12 @@ class ShowSessionListSerializer(ShowSessionSerializer):
     show_begin = serializers.DateTimeField(format="%d/%m/%Y, %H:%M")
 
 
+class TicketSeatsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ["row", "seat"]
+
+
 class ShowSessionDetailSerializer(serializers.ModelSerializer):
     astronomy_show = serializers.StringRelatedField(many=False, read_only=True)
     planetarium_dome = serializers.StringRelatedField(
@@ -154,6 +160,9 @@ class ShowSessionDetailSerializer(serializers.ModelSerializer):
     duration = serializers.IntegerField(
         source="astronomy_show.duration", read_only=True
     )
+    taken_places = TicketSeatsSerializer(
+        source="tickets", many=True, read_only=True
+    )
 
     class Meta:
         model = ShowSession
@@ -164,6 +173,7 @@ class ShowSessionDetailSerializer(serializers.ModelSerializer):
             "show_begin",
             "show_end",
             "duration",
+            "taken_places",
         ]
 
 
