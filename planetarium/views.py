@@ -1,3 +1,58 @@
-from django.shortcuts import render
+from rest_framework import viewsets, mixins
 
-# Create your views here.
+from planetarium.models import (
+    PlanetariumDome,
+    ShowTheme,
+    AstronomyShow,
+    ShowSession,
+    Reservation,
+)
+
+from planetarium.serializers import (
+    PlanetariumDomeSerializer,
+    ShowThemeSerializer,
+    ShowSessionSerializer,
+    AstronomyShowSerializer,
+    ReservationSerializer,
+)
+
+class CreateListRetrieveUpdateViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    A viewset that provides `retrieve`, `update`, and `list` actions.
+    """
+
+
+class PlanetariumDomeViewSet(CreateListRetrieveUpdateViewSet):
+    queryset = PlanetariumDome.objects.all()
+    serializer_class = PlanetariumDomeSerializer
+
+
+class ShowThemeViewSet(CreateListRetrieveUpdateViewSet):
+    queryset = ShowTheme.objects.all()
+    serializer_class = ShowThemeSerializer
+
+
+class AstronomyShowViewSet(viewsets.ModelViewSet):
+    queryset = AstronomyShow.objects.all()
+    serializer_class = AstronomyShowSerializer
+
+
+class ShowSessionViewSet(CreateListRetrieveUpdateViewSet):
+    queryset = ShowSession.objects.all()
+    serializer_class = ShowSessionSerializer
+
+
+class ReservationViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
