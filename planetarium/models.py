@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 from django.db import models
-from rest_framework.exceptions import ValidationError as RestValidationError
-from django.core.exceptions import ValidationError as CoreValidationError
+from rest_framework.exceptions import ValidationError
 
 from planetarium_api import settings
 
@@ -37,19 +36,12 @@ class SeatRow(models.Model):
         ordering = ["row_number"]
         verbose_name = "row of seats"
         verbose_name_plural = "rows of seats"
-
-    def validate_unique(self, *args, **kwargs):
-        super().validate_unique(*args, **kwargs)
-        if self.__class__.objects.filter(
-            planetarium_dome=self.planetarium_dome, row_number=self.row_number
-        ).exists():
-            raise CoreValidationError(
-                message=(
-                    f"Row {self.row_number} already exists "
-                    f"in Planetarium dome '{self.planetarium_dome}'."
-                ),
-                code="unique_together",
+        constraints = [
+            models.UniqueConstraint(
+                name="planetarium_dome_seat_row_number_unique_together",
+                fields=("planetarium_dome_id", "row_number"),
             )
+        ]
 
 
 class ShowTheme(models.Model):
@@ -162,7 +154,7 @@ class Ticket(models.Model):
             row_number=self.row,
             seat=self.seat,
             planetarium_dome=self.show_session.planetarium_dome,
-            error_to_raise=RestValidationError,
+            error_to_raise=ValidationError,
         )
 
     def save(
