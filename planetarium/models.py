@@ -21,7 +21,7 @@ class PlanetariumDome(models.Model):
     @property
     def capacity(self) -> int:
         capacity = 0
-        for row in self.seat_rows:
+        for row in self.seat_rows.all():
             capacity += row.seats_in_row
         return capacity
 
