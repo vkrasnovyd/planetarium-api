@@ -83,7 +83,7 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
 
             if show_theme:
                 show_theme_ids = self._params_to_ints(show_theme)
-                queryset = queryset.filter(show_theme__id__in=show_theme_ids)
+                queryset = queryset.filter(show_theme__id__in=show_theme_ids).distinct()
 
         if self.action in ["list", "retrieve"]:
             queryset = queryset.prefetch_related("show_theme")
@@ -161,9 +161,7 @@ class ReservationViewSet(
         queryset = super(ReservationViewSet, self).get_queryset()
 
         if self.action in ["list", "retrieve"]:
-            queryset = queryset.prefetch_related(
-                "tickets__show_session",
-            )
+            queryset = queryset.prefetch_related("tickets__show_session")
 
         return queryset
 
