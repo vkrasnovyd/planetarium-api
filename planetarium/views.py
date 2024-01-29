@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework import viewsets, mixins
 
 from planetarium.models import (
@@ -103,7 +105,29 @@ class ShowSessionViewSet(CreateListRetrieveUpdateViewSet):
     serializer_class = ShowSessionSerializer
 
     def get_queryset(self):
+        """Retrieve the shows sessions with filters"""
         queryset = super(ShowSessionViewSet, self).get_queryset()
+
+        if self.action == "list":
+            astronomy_show_id = self.request.query_params.get("astronomy_show")
+            planetarium_dome_id = self.request.query_params.get(
+                "planetarium_dome"
+            )
+            date = self.request.query_params.get("date")
+
+            if astronomy_show_id:
+                queryset = queryset.filter(
+                    astronomy_show_id=int(astronomy_show_id)
+                )
+
+            if planetarium_dome_id:
+                queryset = queryset.filter(
+                    planetarium_dome_id=int(planetarium_dome_id)
+                )
+
+            if date:
+                date = datetime.strptime(date, "%Y-%m-%d").date()
+                queryset = queryset.filter(show_begin__date=date)
 
         if self.action in ["list", "retrieve"]:
             queryset = (
