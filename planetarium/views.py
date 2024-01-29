@@ -1,7 +1,9 @@
 from datetime import datetime
 
 from rest_framework import viewsets, mixins
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 from planetarium.models import (
     PlanetariumDome,
@@ -10,6 +12,7 @@ from planetarium.models import (
     ShowSession,
     Reservation,
 )
+from planetarium.permissions import IsAdminOrReadOnly
 
 from planetarium.serializers import (
     PlanetariumDomeSerializer,
@@ -47,6 +50,8 @@ class PlanetariumDomeViewSet(CreateListRetrieveUpdateViewSet):
     queryset = PlanetariumDome.objects.all()
     serializer_class = PlanetariumDomeSerializer
     pagination_class = Pagination
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAdminOrReadOnly,)
 
     def get_queryset(self):
         queryset = super(PlanetariumDomeViewSet, self).get_queryset()
@@ -67,12 +72,16 @@ class ShowThemeViewSet(CreateListRetrieveUpdateViewSet):
     queryset = ShowTheme.objects.all()
     serializer_class = ShowThemeSerializer
     pagination_class = Pagination
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class AstronomyShowViewSet(viewsets.ModelViewSet):
     queryset = AstronomyShow.objects.all()
     serializer_class = AstronomyShowSerializer
     pagination_class = Pagination
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAdminOrReadOnly,)
 
     @staticmethod
     def _params_to_ints(qs):
@@ -113,6 +122,8 @@ class ShowSessionViewSet(CreateListRetrieveUpdateViewSet):
     queryset = ShowSession.objects.all()
     serializer_class = ShowSessionSerializer
     pagination_class = Pagination
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAdminOrReadOnly,)
 
     def get_queryset(self):
         """Retrieve the shows sessions with filters"""
@@ -167,6 +178,8 @@ class ReservationViewSet(
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
     pagination_class = Pagination
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         queryset = super(ReservationViewSet, self).get_queryset()
