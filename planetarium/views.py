@@ -63,8 +63,25 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
     queryset = AstronomyShow.objects.all()
     serializer_class = AstronomyShowSerializer
 
+    @staticmethod
+    def _params_to_ints(qs):
+        """Converts a list of string IDs to a list of integers"""
+        return [int(str_id) for str_id in qs.split(",")]
+
     def get_queryset(self):
+        """Retrieve the astronomy shows with filters"""
         queryset = super(AstronomyShowViewSet, self).get_queryset()
+
+        if self.action == "list":
+            title = self.request.query_params.get("title")
+            show_theme = self.request.query_params.get("show_theme")
+
+            if title:
+                queryset = queryset.filter(title__icontains=title)
+
+            if show_theme:
+                show_theme_ids = self._params_to_ints(show_theme)
+                queryset = queryset.filter(show_theme__id__in=show_theme_ids)
 
         if self.action in ["list", "retrieve"]:
             queryset = queryset.prefetch_related("show_theme")
