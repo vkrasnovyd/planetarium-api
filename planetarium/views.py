@@ -121,8 +121,7 @@ class ReservationViewSet(
 
         if self.action in ["list", "retrieve"]:
             queryset = queryset.prefetch_related(
-                "tickets__show_session__astronomy_show",
-                "tickets__show_session__planetarium_dome",
+                "tickets__show_session",
             )
 
         return queryset
