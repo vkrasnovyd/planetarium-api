@@ -129,6 +129,12 @@ class AstronomyShowDetailSerializer(AstronomyShowSerializer):
         ]
 
 
+class AstronomyShowImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AstronomyShow
+        fields = ["id", "image"]
+
+
 class ShowSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShowSession
