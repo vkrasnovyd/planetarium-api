@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from rest_framework import viewsets, mixins
+from rest_framework.pagination import PageNumberPagination
 
 from planetarium.models import (
     PlanetariumDome,
@@ -37,9 +38,15 @@ class CreateListRetrieveUpdateViewSet(
     """
 
 
+class Pagination(PageNumberPagination):
+    page_size = 20
+    max_page_size = 100
+
+
 class PlanetariumDomeViewSet(CreateListRetrieveUpdateViewSet):
     queryset = PlanetariumDome.objects.all()
     serializer_class = PlanetariumDomeSerializer
+    pagination_class = Pagination
 
     def get_queryset(self):
         queryset = super(PlanetariumDomeViewSet, self).get_queryset()
@@ -59,11 +66,13 @@ class PlanetariumDomeViewSet(CreateListRetrieveUpdateViewSet):
 class ShowThemeViewSet(CreateListRetrieveUpdateViewSet):
     queryset = ShowTheme.objects.all()
     serializer_class = ShowThemeSerializer
+    pagination_class = Pagination
 
 
 class AstronomyShowViewSet(viewsets.ModelViewSet):
     queryset = AstronomyShow.objects.all()
     serializer_class = AstronomyShowSerializer
+    pagination_class = Pagination
 
     @staticmethod
     def _params_to_ints(qs):
@@ -103,6 +112,7 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
 class ShowSessionViewSet(CreateListRetrieveUpdateViewSet):
     queryset = ShowSession.objects.all()
     serializer_class = ShowSessionSerializer
+    pagination_class = Pagination
 
     def get_queryset(self):
         """Retrieve the shows sessions with filters"""
@@ -156,6 +166,7 @@ class ReservationViewSet(
 ):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+    pagination_class = Pagination
 
     def get_queryset(self):
         queryset = super(ReservationViewSet, self).get_queryset()
