@@ -170,6 +170,7 @@ class ReservationViewSet(
 
     def get_queryset(self):
         queryset = super(ReservationViewSet, self).get_queryset()
+        queryset = queryset.filter(user=self.request.user)
 
         if self.action in ["list", "retrieve"]:
             queryset = queryset.prefetch_related("tickets__show_session")
