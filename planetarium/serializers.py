@@ -140,6 +140,23 @@ class ShowSessionListSerializer(ShowSessionSerializer):
         many=False, read_only=True
     )
     show_begin = serializers.DateTimeField(format="%d/%m/%Y, %H:%M")
+    available_seats = serializers.SerializerMethodField("get_available_seats")
+
+    @staticmethod
+    def get_available_seats(show_session):
+        all_places = show_session.planetarium_dome.capacity
+        sold_places = show_session.tickets.count()
+        return all_places - sold_places
+
+    class Meta:
+        model = ShowSession
+        fields = [
+            "id",
+            "astronomy_show",
+            "planetarium_dome",
+            "show_begin",
+            "available_seats",
+        ]
 
 
 class TicketSeatsSerializer(serializers.ModelSerializer):

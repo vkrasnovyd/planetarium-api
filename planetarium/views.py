@@ -89,8 +89,10 @@ class ShowSessionViewSet(CreateListRetrieveUpdateViewSet):
         queryset = super(ShowSessionViewSet, self).get_queryset()
 
         if self.action in ["list", "retrieve"]:
-            queryset = queryset.select_related(
-                "astronomy_show", "planetarium_dome"
+            queryset = (
+                queryset
+                .select_related("astronomy_show", "planetarium_dome")
+                .prefetch_related("tickets", "planetarium_dome__seat_rows")
             )
 
         return queryset
