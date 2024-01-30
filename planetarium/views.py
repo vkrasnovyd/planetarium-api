@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
@@ -140,6 +142,24 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    # Only for documentation purposes
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="title",
+                type=OpenApiTypes.STR,
+                description="Filter by title part (case insensitive) (ex. ?title=blac)",
+            ),
+            OpenApiParameter(
+                name="show_theme",
+                type={"type": "list", "items": {"type": "number"}},
+                description="Filter by show_theme id (ex. ?show_theme=1,2)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class ShowSessionViewSet(CreateListRetrieveUpdateViewSet):
     queryset = ShowSession.objects.all()
@@ -190,6 +210,29 @@ class ShowSessionViewSet(CreateListRetrieveUpdateViewSet):
             return ShowSessionDetailSerializer
 
         return ShowSessionSerializer
+
+    # Only for documentation purposes
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="astronomy_show",
+                type=OpenApiTypes.INT,
+                description="Filter by astronomy_show id (ex. ?astronomy_show=1)",
+            ),
+            OpenApiParameter(
+                name="planetarium_dome",
+                type=OpenApiTypes.INT,
+                description="Filter by planetarium_dome id (ex. ?planetarium_dome=1)",
+            ),
+            OpenApiParameter(
+                name="date",
+                type=OpenApiTypes.DATE,
+                description="Filter by date (ex. ?date=2024-02-10)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class ReservationViewSet(
