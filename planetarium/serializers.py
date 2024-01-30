@@ -67,6 +67,8 @@ class PlanetariumDomeSerializer(serializers.ModelSerializer):
                         planetarium_dome=instance, **seat_row_data
                     )
 
+            instance.name = validated_data.get("name")
+
             return instance
 
 
