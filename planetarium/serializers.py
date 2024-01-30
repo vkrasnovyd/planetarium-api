@@ -136,12 +136,17 @@ class AstronomyShowImageSerializer(serializers.ModelSerializer):
 
 
 class ShowSessionSerializer(serializers.ModelSerializer):
+    planetarium_dome = serializers.StringRelatedField(
+        many=False, read_only=True
+    )
+    show_begin = serializers.DateTimeField(format="%d/%m/%Y, %H:%M")
+
     class Meta:
         model = ShowSession
-        fields = ["id", "astronomy_show", "planetarium_dome", "show_begin"]
+        fields = ["planetarium_dome", "show_begin"]
 
 
-class ShowSessionListSerializer(ShowSessionSerializer):
+class ShowSessionListSerializer(serializers.ModelSerializer):
     astronomy_show = serializers.StringRelatedField(many=False, read_only=True)
     show_image = serializers.ImageField(
         source="astronomy_show.image", use_url=True, read_only=True
@@ -170,12 +175,16 @@ class ShowSessionListSerializer(ShowSessionSerializer):
         ]
 
 
-class ShowSessionTicketSerializer(ShowSessionSerializer):
+class ShowSessionTicketSerializer(serializers.ModelSerializer):
     astronomy_show = serializers.StringRelatedField(many=False, read_only=True)
     planetarium_dome = serializers.StringRelatedField(
         many=False, read_only=True
     )
     show_begin = serializers.DateTimeField(format="%d/%m/%Y, %H:%M")
+
+    class Meta:
+        model = ShowSession
+        fields = ["id", "astronomy_show", "planetarium_dome", "show_begin"]
 
 
 class TicketSeatsSerializer(serializers.ModelSerializer):
