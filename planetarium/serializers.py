@@ -1,7 +1,7 @@
 import datetime
 from zoneinfo import ZoneInfo
 
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from rest_framework import serializers, exceptions
 from rest_framework.exceptions import ValidationError
 
@@ -35,11 +35,16 @@ class PlanetariumDomeSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             seat_rows_data = validated_data.pop("seat_rows")
             planetarium_dome = PlanetariumDome.objects.create(**validated_data)
-            for seat_row_data in seat_rows_data:
-                SeatRow.objects.create(
-                    planetarium_dome=planetarium_dome, **seat_row_data
-                )
-            return planetarium_dome
+            try:
+                for seat_row_data in seat_rows_data:
+                    SeatRow.objects.create(
+                        planetarium_dome=planetarium_dome, **seat_row_data
+                    )
+                return planetarium_dome
+            except IntegrityError:
+                from django.core.exceptions import BadRequest
+
+                raise BadRequest
 
     def update(self, instance, validated_data):
         with transaction.atomic():
