@@ -4,55 +4,22 @@ from zoneinfo import ZoneInfo
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-
-from rest_framework.test import APIClient
 from rest_framework import status
+from rest_framework.test import APIClient
 
-from planetarium.models import (
-    PlanetariumDome,
-    ShowSession,
-    AstronomyShow,
-)
+from planetarium.models import ShowSession
 from planetarium.serializers import (
     ShowSessionListSerializer,
     ShowSessionDetailSerializer,
 )
+from planetarium.tests.test_astronomy_show_api import (
+    sample_astronomy_show,
+    sample_show_session,
+)
+from planetarium.tests.test_planetarium_dome_api import sample_planetarium_dome
 
 SHOW_SESSION_LIST_URL = reverse("planetarium:show-session-list")
 SHOW_SESSION_DETAIL_URL = reverse("planetarium:show-session-detail", args=[1])
-
-
-def sample_planetarium_dome(**params):
-    defaults = {"name": "Sample dome"}
-    defaults.update(params)
-
-    return PlanetariumDome.objects.create(**defaults)
-
-
-def sample_astronomy_show(**params):
-    defaults = {
-        "title": "Sample title",
-        "description": "Sample description",
-        "duration": 90,
-    }
-    defaults.update(params)
-
-    return AstronomyShow.objects.create(**defaults)
-
-
-def sample_show_session(**params):
-    tzinfo = ZoneInfo("Europe/Berlin")
-    astronomy_show = sample_astronomy_show()
-    planetarium_dome = sample_planetarium_dome()
-
-    defaults = {
-        "astronomy_show": astronomy_show,
-        "planetarium_dome": planetarium_dome,
-        "show_begin": datetime.datetime.now(tzinfo),
-    }
-    defaults.update(params)
-
-    return ShowSession.objects.create(**defaults)
 
 
 class UnauthenticatedShowSessionApiTests(TestCase):

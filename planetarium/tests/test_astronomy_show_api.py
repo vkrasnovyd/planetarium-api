@@ -7,20 +7,15 @@ from PIL import Image
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-
-from rest_framework.test import APIClient
 from rest_framework import status
+from rest_framework.test import APIClient
 
-from planetarium.models import (
-    AstronomyShow,
-    ShowTheme,
-    PlanetariumDome,
-    ShowSession,
-)
+from planetarium.models import AstronomyShow, PlanetariumDome, ShowSession
 from planetarium.serializers import (
     AstronomyShowListSerializer,
     AstronomyShowDetailSerializer,
 )
+from planetarium.tests.test_show_theme_api import sample_show_theme
 
 ASTRONOMY_SHOW_LIST_URL = reverse("planetarium:astronomy-show-list")
 ASTRONOMY_SHOW_DETAIL_URL = reverse(
@@ -42,13 +37,6 @@ def sample_astronomy_show(**params):
     defaults.update(params)
 
     return AstronomyShow.objects.create(**defaults)
-
-
-def sample_show_theme(**params):
-    defaults = {"name": "Sample theme"}
-    defaults.update(params)
-
-    return ShowTheme.objects.create(**defaults)
 
 
 def sample_show_session(**params):

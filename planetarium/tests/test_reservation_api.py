@@ -5,52 +5,19 @@ from zoneinfo import ZoneInfo
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-
-from rest_framework.test import APIClient
 from rest_framework import status
+from rest_framework.test import APIClient
 
-from planetarium.models import (
-    Reservation,
-    ShowSession,
-    AstronomyShow,
-    PlanetariumDome,
-    SeatRow,
-    Ticket,
-)
+from planetarium.models import Reservation, ShowSession, Ticket
 from planetarium.serializers import ReservationListSerializer
+from planetarium.tests.test_astronomy_show_api import sample_astronomy_show
+from planetarium.tests.test_planetarium_dome_api import (
+    sample_planetarium_dome,
+    sample_seat_row,
+)
 
 RESERVATION_LIST_URL = reverse("planetarium:reservation-list")
 RESERVATION_DETAIL_URL = reverse("planetarium:reservation-detail", args=[1])
-
-
-def sample_planetarium_dome(**params):
-    defaults = {"name": "Sample dome"}
-    defaults.update(params)
-
-    return PlanetariumDome.objects.create(**defaults)
-
-
-def sample_seat_row(planetarium_dome, **params):
-    defaults = {
-        "planetarium_dome": planetarium_dome,
-        "row_number": 1,
-        "seats_in_row": 5,
-    }
-
-    defaults.update(params)
-
-    return SeatRow.objects.create(**defaults)
-
-
-def sample_astronomy_show(**params):
-    defaults = {
-        "title": "Sample title",
-        "description": "Sample description",
-        "duration": 90,
-    }
-    defaults.update(params)
-
-    return AstronomyShow.objects.create(**defaults)
 
 
 def sample_show_session(**params):
