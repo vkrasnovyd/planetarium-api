@@ -75,7 +75,7 @@ class AstronomyShow(models.Model):
         ShowTheme, related_name="astronomy_shows", blank=True
     )
     image = models.ImageField(
-        null=True, upload_to=astronomy_show_image_file_path
+        null=True, blank=True, upload_to=astronomy_show_image_file_path
     )
 
     class Meta:
