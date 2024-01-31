@@ -133,12 +133,11 @@ class AdminAstronomyShowApiTests(TestCase):
             "admin@admin.com", "testpass", is_staff=True
         )
         self.client.force_authenticate(self.user)
-        show_theme = sample_show_theme()
+
         self.payload = {
             "title": "Another title",
             "description": "Another description",
-            "duration": 88,
-            "show_theme": show_theme.id,
+            "duration": 85,
         }
 
     def test_create_astronomy_show(self):
@@ -146,12 +145,36 @@ class AdminAstronomyShowApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
+        astronomy_show = AstronomyShow.objects.get(id=res.data["id"])
+
+        for key in self.payload.keys():
+            self.assertEqual(self.payload[key], getattr(astronomy_show, key))
+
+    def test_create_astronomy_show_with_show_theme(self):
+        payload = self.payload
+        test_show_theme = sample_show_theme()
+        payload["show_theme"] = test_show_theme.id
+
+        res = self.client.post(ASTRONOMY_SHOW_LIST_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+        astronomy_show = AstronomyShow.objects.get(id=res.data["id"])
+        show_themes = astronomy_show.show_theme.all()
+
+        self.assertIn(test_show_theme, show_themes)
+
     def test_put_astronomy_show(self):
         sample_astronomy_show()
 
         res = self.client.put(ASTRONOMY_SHOW_DETAIL_URL, self.payload)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        astronomy_show = AstronomyShow.objects.get(id=res.data["id"])
+
+        for key in self.payload.keys():
+            self.assertEqual(self.payload[key], getattr(astronomy_show, key))
 
     def test_delete_astronomy_show(self):
         sample_astronomy_show()
@@ -212,7 +235,6 @@ class AstronomyShowImageUploadTests(TestCase):
                     "title": "Title",
                     "description": "Description",
                     "duration": 90,
-                    "show_theme": sample_show_theme().id,
                 },
                 format="multipart",
             )
