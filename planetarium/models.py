@@ -72,7 +72,7 @@ class AstronomyShow(models.Model):
     description = models.TextField()
     duration = models.IntegerField()
     show_theme = models.ManyToManyField(
-        ShowTheme, related_name="astronomy_shows"
+        ShowTheme, related_name="astronomy_shows", blank=True
     )
     image = models.ImageField(
         null=True, upload_to=astronomy_show_image_file_path
