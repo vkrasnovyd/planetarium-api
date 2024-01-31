@@ -82,6 +82,46 @@ class UnauthenticatedAstronomyShowApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.json()["results"], serializer.data)
 
+    def test_filter_astronomy_shows_by_title(self):
+        astronomy_show1 = sample_astronomy_show()
+        astronomy_show2 = sample_astronomy_show(title="Test show 1")
+        astronomy_show3 = sample_astronomy_show(title="Test show 2")
+
+        res = self.client.get(ASTRONOMY_SHOW_LIST_URL, {"title": "Est"})
+
+        serializer1 = AstronomyShowListSerializer(astronomy_show1)
+        serializer2 = AstronomyShowListSerializer(astronomy_show2)
+        serializer3 = AstronomyShowListSerializer(astronomy_show3)
+
+        self.assertNotIn(serializer1.data, res.json()["results"])
+        self.assertIn(serializer2.data, res.json()["results"])
+        self.assertIn(serializer3.data, res.json()["results"])
+
+    def test_filter_astronomy_shows_by_show_theme(self):
+        show_theme1 = sample_show_theme()
+        show_theme2 = sample_show_theme(name="Test theme")
+
+        astronomy_show1 = sample_astronomy_show()
+        astronomy_show2 = sample_astronomy_show()
+
+        astronomy_show1.show_theme.set([show_theme1.id, show_theme2.id])
+        astronomy_show2.show_theme.set([show_theme2.id])
+
+        astronomy_show_without_theme = sample_astronomy_show()
+
+        res = self.client.get(
+            ASTRONOMY_SHOW_LIST_URL,
+            {"show_theme": f"{show_theme1.id},{show_theme2.id}"},
+        )
+
+        serializer1 = AstronomyShowListSerializer(astronomy_show1)
+        serializer2 = AstronomyShowListSerializer(astronomy_show2)
+        serializer3 = AstronomyShowListSerializer(astronomy_show_without_theme)
+
+        self.assertIn(serializer1.data, res.json()["results"])
+        self.assertIn(serializer2.data, res.json()["results"])
+        self.assertNotIn(serializer3.data, res.json()["results"])
+
     def test_retrieve_astronomy_show_detail(self):
         astronomy_show = sample_astronomy_show()
 
