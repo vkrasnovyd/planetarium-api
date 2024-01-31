@@ -55,7 +55,6 @@ class PlanetariumDomeViewSet(CreateListRetrieveUpdateViewSet):
     queryset = PlanetariumDome.objects.all()
     serializer_class = PlanetariumDomeSerializer
     pagination_class = Pagination
-    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
 
     def get_queryset(self):
@@ -77,7 +76,6 @@ class ShowThemeViewSet(CreateListRetrieveUpdateViewSet):
     queryset = ShowTheme.objects.all()
     serializer_class = ShowThemeSerializer
     pagination_class = Pagination
-    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
 
 
@@ -85,7 +83,6 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
     queryset = AstronomyShow.objects.all()
     serializer_class = AstronomyShowSerializer
     pagination_class = Pagination
-    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
 
     @staticmethod
@@ -165,7 +162,6 @@ class ShowSessionViewSet(CreateListRetrieveUpdateViewSet):
     queryset = ShowSession.objects.all()
     serializer_class = ShowSessionSerializer
     pagination_class = Pagination
-    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
 
     def get_queryset(self):
@@ -195,8 +191,7 @@ class ShowSessionViewSet(CreateListRetrieveUpdateViewSet):
 
         if self.action in ["list", "retrieve"]:
             queryset = (
-                queryset
-                .select_related("astronomy_show", "planetarium_dome")
+                queryset.select_related("astronomy_show", "planetarium_dome")
                 .prefetch_related("tickets", "planetarium_dome__seat_rows")
             )
 
@@ -244,7 +239,6 @@ class ReservationViewSet(
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
     pagination_class = Pagination
-    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
