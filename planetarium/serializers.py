@@ -117,7 +117,7 @@ class AstronomyShowDetailSerializer(AstronomyShowSerializer):
             astronomy_show=astronomy_show,
         )[:5]
 
-        serializer = ShowSessionSerializer(
+        serializer = AstronomyShowShowSessionSerializer(
             instance=show_sessions_queryset, many=True, context=self.context
         )
 
@@ -140,6 +140,12 @@ class AstronomyShowImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = AstronomyShow
         fields = ["id", "image"]
+
+
+class AstronomyShowShowSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShowSession
+        fields = ["planetarium_dome", "show_begin"]
 
 
 class ShowSessionSerializer(serializers.ModelSerializer):
