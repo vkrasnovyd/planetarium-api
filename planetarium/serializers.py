@@ -143,14 +143,9 @@ class AstronomyShowImageSerializer(serializers.ModelSerializer):
 
 
 class ShowSessionSerializer(serializers.ModelSerializer):
-    planetarium_dome = serializers.StringRelatedField(
-        many=False, read_only=True
-    )
-    show_begin = serializers.DateTimeField(format="%d/%m/%Y, %H:%M")
-
     class Meta:
         model = ShowSession
-        fields = ["planetarium_dome", "show_begin"]
+        fields = ["id", "astronomy_show", "planetarium_dome", "show_begin"]
 
 
 class ShowSessionListSerializer(serializers.ModelSerializer):
