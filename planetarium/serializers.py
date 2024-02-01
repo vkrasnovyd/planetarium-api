@@ -73,6 +73,8 @@ class PlanetariumDomeSerializer(serializers.ModelSerializer):
                     )
 
             instance.name = validated_data.get("name")
+            instance.description = validated_data.get("description")
+            instance.save()
 
             return instance
 
