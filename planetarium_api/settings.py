@@ -156,8 +156,8 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Bus station API",
-    "DESCRIPTION": "Order tickets for your trips",
+    "TITLE": "Planetarium API",
+    "DESCRIPTION": "Order tickets for the astronomy shows",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "SWAGGER_UI_SETTINGS": {
