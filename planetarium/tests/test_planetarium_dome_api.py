@@ -128,6 +128,7 @@ class AdminPlanetariumDomeSeatRowsTests(TestCase):
         self.client.force_authenticate(self.user)
         self.payload = {
             "name": "Zeiss hybrid dome",
+            "description": "Sample description",
             "seat_rows": [
                 {
                     "row_number": 1,
@@ -151,6 +152,7 @@ class AdminPlanetariumDomeSeatRowsTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(res.data["name"], self.payload["name"])
+        self.assertEqual(res.data["description"], self.payload["description"])
 
         seat_rows = res.json()["seat_rows"]
         self.assertEqual(seat_rows, self.payload["seat_rows"])
@@ -170,6 +172,7 @@ class AdminPlanetariumDomeSeatRowsTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data["name"], payload["name"])
+        self.assertEqual(res.data["description"], self.payload["description"])
 
         seat_rows = res.json()["seat_rows"]
         self.assertEqual(seat_rows, payload["seat_rows"])
