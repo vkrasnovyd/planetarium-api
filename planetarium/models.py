@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.text import slugify
 from rest_framework.exceptions import ValidationError
 
-from planetarium_api import settings
+from django.conf import settings
 
 
 class PlanetariumDome(models.Model):
